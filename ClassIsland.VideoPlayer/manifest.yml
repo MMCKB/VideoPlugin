@@ -1,0 +1,12 @@
+# nonk8s
+# ClassIsland 插件清单文件
+# 清单格式文档：https://docs.classisland.tech/dev/plugins/create-project/
+
+id: ClassIsland.VideoPlayer
+name: 视频播放器
+description: 在 ClassIsland 主界面（岛）的组件行中播放视频，支持本地文件与网络地址、循环播放、音量控制。
+entranceAssembly: "ClassIsland.VideoPlayer.dll"
+url: https://github.com/MMCKB/VideoPlugin
+version: 1.1.0.0
+apiVersion: 2.0.0.0
+author: MMCKB

@@ -1,0 +1,40 @@
+<ci:ComponentBase x:Class="ClassIsland.VideoPlayer.Controls.VideoPlayerComponent"
+                  x:TypeArguments="models:VideoPlayerSettings"
+                  xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                  xmlns:models="clr-namespace:ClassIsland.VideoPlayer.Models"
+                  mc:Ignorable="d">
+    <!-- 注意：这里刻意不给任何元素设置 Background，保证视频以外的区域完全透明，
+         由 ClassIsland 的组件背景设置（背景不透明度）来决定是否要底色。 -->
+    <Grid>
+        <Border Name="RootBorder"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                ClipToBounds="True"
+                CornerRadius="8">
+            <Image Name="VideoImage"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Stretch="Uniform" />
+        </Border>
+
+        <!-- 加载/错误提示：只占一小块居中的胶囊，不遮挡整块区域 -->
+        <Border Name="StatusBorder"
+                Background="#CC1F1F1F"
+                CornerRadius="6"
+                Padding="10,6"
+                MaxWidth="300"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsVisible="False">
+            <TextBlock Name="StatusText"
+                       FontSize="12"
+                       TextWrapping="Wrap"
+                       TextAlignment="Center"
+                       Foreground="#FFFFFF" />
+        </Border>
+    </Grid>
+</ci:ComponentBase>

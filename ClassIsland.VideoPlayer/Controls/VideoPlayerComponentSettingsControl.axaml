@@ -1,0 +1,111 @@
+<ci:ComponentBase x:Class="ClassIsland.VideoPlayer.Controls.VideoPlayerComponentSettingsControl"
+                  x:TypeArguments="models:VideoPlayerSettings"
+                  xmlns="https://github.com/avaloniaui"
+                  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                  xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                  xmlns:models="clr-namespace:ClassIsland.VideoPlayer.Models"
+                  xmlns:local="clr-namespace:ClassIsland.VideoPlayer.Controls"
+                  xmlns:fui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+                  mc:Ignorable="d"
+                  d:DesignHeight="450" d:DesignWidth="800">
+    <ScrollViewer>
+        <StackPanel Classes="component-settings-container animated-intro" Margin="0"
+                    DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=local:VideoPlayerComponentSettingsControl}}">
+
+            <fui:SettingsExpander IconSource="{ci:FluentIconSource &#xE82B;}"
+                                  Header="视频来源"
+                                  Description="本地视频文件，或 http/https 网络视频地址。">
+                <fui:SettingsExpander.Footer>
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBox MinWidth="180"
+                                 Watermark="选择文件或填入地址"
+                                 Text="{Binding Settings.Source, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Content="浏览…" Click="OnBrowseClick" />
+                    </StackPanel>
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <fui:SettingsExpander IconSource="{ci:FluentIconSource &#xE125;}"
+                                  Header="循环播放"
+                                  Description="播放结束后从头继续播放。">
+                <fui:SettingsExpander.Footer>
+                    <ToggleSwitch IsChecked="{Binding Settings.Loop, Mode=TwoWay}" />
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <fui:SettingsExpander IconSource="{ci:FluentIconSource &#xF00B;}"
+                                  Header="音量"
+                                  Description="视频的音量大小。">
+                <fui:SettingsExpander.Footer>
+                    <Slider Width="180"
+                            Minimum="0" Maximum="1"
+                            TickFrequency="0.05"
+                            TickPlacement="None"
+                            IsSnapToTickEnabled="True"
+                            Classes="auto-tooltip"
+                            ci:SliderDragTooltipAssist.StringFormat="P0"
+                            Value="{Binding Settings.Volume, Mode=TwoWay}" />
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <fui:SettingsExpander IconSource="{ci:FluentIconSource &#xF015;}"
+                                  Header="静音"
+                                  Description="静音播放视频，不影响画面。">
+                <fui:SettingsExpander.Footer>
+                    <ToggleSwitch IsChecked="{Binding Settings.Muted, Mode=TwoWay}" />
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <fui:SettingsExpander IconSource="{ci:FluentIconSource &#xE8D1;}"
+                                  Header="显示高度"
+                                  Description="视频在主界面上占用的高度，宽度按视频比例自动计算。">
+                <fui:SettingsExpander.Footer>
+                    <Slider Width="180"
+                            Minimum="40" Maximum="600"
+                            TickFrequency="10"
+                            TickPlacement="None"
+                            IsSnapToTickEnabled="True"
+                            Classes="auto-tooltip"
+                            ci:SliderDragTooltipAssist.StringFormat="F0"
+                            Value="{Binding Settings.DisplayHeight, Mode=TwoWay}" />
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <fui:SettingsExpander Header="圆角半径"
+                                  Description="视频画面的圆角大小，与主界面风格保持一致。">
+                <fui:SettingsExpander.Footer>
+                    <Slider Width="180"
+                            Minimum="0" Maximum="40"
+                            TickFrequency="1"
+                            TickPlacement="None"
+                            IsSnapToTickEnabled="True"
+                            Classes="auto-tooltip"
+                            ci:SliderDragTooltipAssist.StringFormat="F0"
+                            Value="{Binding Settings.CornerRadius, Mode=TwoWay}" />
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <fui:SettingsExpander Header="解码宽度上限"
+                                  Description="视频缩放到该宽度以内再解码。0 表示跟随插件设置，数值越小越省 CPU。">
+                <fui:SettingsExpander.Footer>
+                    <NumericUpDown MinWidth="120"
+                                   Minimum="0" Maximum="1920"
+                                   Increment="40"
+                                   FormatString="0"
+                                   Value="{Binding Settings.MaxRenderWidth, Mode=TwoWay}" />
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <fui:SettingsExpander IconSource="{ci:FluentIconSource &#xEC91;}"
+                                  Header="隐藏时暂停"
+                                  Description="组件被隐藏规则隐藏或主界面收起时自动暂停播放。">
+                <fui:SettingsExpander.Footer>
+                    <ToggleSwitch IsChecked="{Binding Settings.PauseWhenHidden, Mode=TwoWay}" />
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+        </StackPanel>
+    </ScrollViewer>
+</ci:ComponentBase>

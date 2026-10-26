@@ -1,0 +1,71 @@
+<ci:SettingsPageBase x:Class="ClassIsland.VideoPlayer.Views.SettingsPages.VideoPlayerSettingsPage"
+                     xmlns="https://github.com/avaloniaui"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:ci="http://classisland.tech/schemas/xaml/core"
+                     xmlns:controls="clr-namespace:ClassIsland.Core.Controls;assembly=ClassIsland.Core"
+                     xmlns:fui="clr-namespace:FluentAvalonia.UI.Controls;assembly=FluentAvalonia"
+                     mc:Ignorable="d"
+                     d:DesignHeight="450" d:DesignWidth="800">
+    <ScrollViewer>
+        <StackPanel Classes="settings-container animated-intro">
+
+            <controls:IconText Glyph="&#xEF27;" Text="运行环境" Margin="0 0 0 4" />
+
+            <fui:InfoBar x:Name="StatusBar"
+                         IsOpen="True"
+                         IsClosable="False"
+                         Severity="Informational"
+                         Title="FFmpeg"
+                         Message="正在检测…" />
+
+            <fui:SettingsExpander IconSource="{ci:FluentIconSource &#xE874;}"
+                                  Header="FFmpeg 路径"
+                                  Description="留空时自动在插件目录和系统 PATH 中查找 ffmpeg.exe。">
+                <fui:SettingsExpander.Footer>
+                    <StackPanel Orientation="Horizontal" Spacing="4">
+                        <TextBox MinWidth="240"
+                                 Watermark="留空则自动查找"
+                                 Text="{Binding FFmpegPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        <Button Content="浏览…" Click="OnBrowseFFmpegClick" />
+                    </StackPanel>
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <fui:SettingsExpander IconSource="{ci:FluentIconSource &#xE0D3;}"
+                                  Header="一键下载 FFmpeg"
+                                  Description="从官方构建源下载 FFmpeg 并保存到插件配置目录，约 80 MB，只需一次。">
+                <fui:SettingsExpander.Footer>
+                    <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <ProgressBar x:Name="DownloadProgress"
+                                     Width="100" Height="4"
+                                     Minimum="0" Maximum="1"
+                                     VerticalAlignment="Center"
+                                     IsVisible="False" />
+                        <Button x:Name="DownloadButton" Content="下载" Click="OnDownloadClick" />
+                    </StackPanel>
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <controls:IconText Glyph="&#xE8E1;" Text="性能" Margin="0 8 0 4" />
+
+            <fui:SettingsExpander Header="解码宽度上限"
+                                  Description="视频会被缩放到这个宽度以内再解码，数值越小 CPU 占用越低。">
+                <fui:SettingsExpander.Footer>
+                    <NumericUpDown MinWidth="120"
+                                   Minimum="120" Maximum="3840"
+                                   Increment="40"
+                                   FormatString="0"
+                                   Value="{Binding MaxRenderWidth, Mode=TwoWay}" />
+                </fui:SettingsExpander.Footer>
+            </fui:SettingsExpander>
+
+            <controls:IconText Glyph="&#xE9E4;" Text="使用提示" Margin="0 8 0 4" />
+
+            <TextBlock TextWrapping="Wrap" Opacity="0.8"
+                       Text="1. 在【应用设置】→【组件】中把【视频播放器】拖到主界面的任意一行；&#10;2. 在该组件的设置里选择视频文件（支持 mp4 / mkv / webm / gif，也支持网络地址）；&#10;3. 显示高度决定视频占多大，解码宽度上限用来平衡清晰度与性能；&#10;4. 如果视频没有声音，请检查组件设置中的音量与静音开关，以及系统默认播放设备。" />
+
+        </StackPanel>
+    </ScrollViewer>
+</ci:SettingsPageBase>

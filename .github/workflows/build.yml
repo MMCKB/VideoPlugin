@@ -1,0 +1,82 @@
+name: Build and Release
+
+# 打 tag（v*）时自动编译并发布 Release，一个 tag 对应一个 Release。
+# 也可以在 Actions 页面手动触发，只编译并上传构建产物，不发布 Release。
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: 编译并发布
+    runs-on: windows-latest
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: 计算版本号
+        id: version
+        shell: pwsh
+        run: |
+          if ("${{ github.ref_type }}" -eq "tag") {
+            $v = "${{ github.ref_name }}" -replace '^[vV]', ''
+          } else {
+            $v = "0.0.0"
+          }
+          $parts = $v.Split('.')
+          while ($parts.Count -lt 4) { $parts += '0' }
+          $four = ($parts[0..3] -join '.')
+          "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          "manifest=$four" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          Write-Host "版本号: $v（清单版本: $four）"
+
+      - name: 同步插件清单版本号
+        shell: pwsh
+        run: |
+          $path = 'ClassIsland.VideoPlayer/manifest.yml'
+          $content = Get-Content -Path $path -Raw
+          $content = [regex]::Replace($content, '(?m)^version:.*$', "version: ${{ steps.version.outputs.manifest }}")
+          Set-Content -Path $path -Value $content -NoNewline -Encoding utf8
+          Get-Content -Path $path | Select-String '^version:'
+
+      - name: 编译
+        run: dotnet build ClassIsland.VideoPlayer/ClassIsland.VideoPlayer.csproj -c Release -p:Version=${{ steps.version.outputs.version }}
+
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: ClassIsland.VideoPlayer.cipx
+          path: ClassIsland.VideoPlayer/cipx/*.cipx
+          if-no-files-found: error
+
+      - name: 发布 Release
+        if: github.ref_type == 'tag'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          pkg=$(ls ClassIsland.VideoPlayer/cipx/*.cipx | head -n 1)
+          echo "发布 $TAG -> $pkg"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" "$pkg" --clobber
+          else
+            gh release create "$TAG" "$pkg" --title "$TAG" --generate-notes
+          fi
